@@ -1,0 +1,79 @@
+  body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    font-family: 'Open Sans', serif;
+  }  
+
+  h2, h3, .brand-logo {
+    font-family: 'IM Fell Great Primer SC', serif;
+    color:white;
+    text-align: center;
+  }
+
+  main {
+    flex: 1 0 auto;
+    padding-top:55px;
+    border-top:7px solid #0da49f;
+    box-shadow: 0 -35px 35px -5px #000;
+  }
+
+  nav, .page-footer {
+  	background-color:#ff2f6e;
+  }
+
+  nav ul a {
+  	font-size: 1.2rem;
+  }
+
+  nav {
+  	height: 74px;
+    line-height: 74px;
+    padding:0 5%;
+  }
+
+  .page-footer {
+  	padding-top:0;
+  	text-align: center;
+  }
+
+  .btn, .btn-large, .btn-small {
+  	background-color:#2815b0;
+  }
+
+  .btn:hover, .btn-large:hover, .btn-small:hover {
+  	background-color:#471dbc;
+  }
+
+  nav .brand-logo {
+  	font-size:3rem;
+  }
+
+  .parallax-container {
+      height: 450px;
+  }
+
+  .red {
+  	background-color:#ff2f6e !important;
+  }
+
+  h2 {
+  	text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    position: relative;
+    font-size:5em;
+    margin-top:120px;
+  }
+
+  h2:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    margin: 10px auto 30px;
+    width: 15%;
+    height: 4px;
+    background:#fff;
+}
