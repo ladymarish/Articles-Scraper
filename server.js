@@ -5,6 +5,8 @@ var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var cheerio = require("cheerio");
 var request = require("request");
+var logger = require("morgan");
+var axios = require("axios");
 
 
 // Sets up the Express App
@@ -15,12 +17,11 @@ var port = process.env.PORT || 3000
 // Require all models
 var db = require("./models");
 
-
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
-//app.use(logger("dev"));
+app.use(logger("dev"));
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
@@ -28,43 +29,64 @@ app.set('view engine', 'handlebars');
 // Database configuration with mongoose
 mongoose.connect("mongodb://localhost/mongoHeadlines");
 //mongoose.connect("mongodb://heroku_0qqw53mz:bjd50o97uugrj47t58g3f1ro4e@ds229690.mlab.com:29690/heroku_0qqw53mz");
-var db = mongoose.connection;
+//var db = mongoose.connection;
 
+
+//GET requests to render Handlebars pages
 app.get('/', function (req, res) {
     res.render('home');
 });
 
 
-// // Make a request call to grab the HTML body
-// request("https://www.nytimes.com/", function(error, response, html) {
+// Scrapes data from Nytimes into database
+app.get("/scrape", function(req, res) {
+  // Make a request for the news section of `ycombinator`
+  request("https://www.nytimes.com/", function(error, response, html) {
+    // Load the html body from request into cheerio
+    var $ = cheerio.load(response.data);
 
-//   // Load the HTML into cheerio and save it to a variable
-//   // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
-//   var $ = cheerio.load(html);
+    // Now, we grab every h2 within an article tag, and do the following:
+    $("h2.headline").each(function(i, element) {
+       // Save an empty result object
+      var result = {};
 
-//   // An empty array to save the data that we'll scrape
-//   var results = [];
+      // Add the text and href of every link, and save them as properties of the result object
+      result.title = $(this).children("a").text();
+      result.link = $(this).children("a").attr("href");
 
-//   // Select each element in the HTML body from which you want information.
-//   // NOTE: Cheerio selectors function similarly to jQuery's selectors,
-//   // but be sure to visit the package's npm page to see how it works
-//   $("li.leaf").each(function(i, element) {
+      // Create a new Article using the `result` object built from scraping
+      db.Article.create(result)
+        .then(function(dbArticle) {
+          // View the added result in the console
+          console.log(dbArticle);
+        })
+        .catch(function(err) {
+          // If an error occurred, send it to the client
+          return res.json(err);
+        });
+    });
 
-//     var link = $(element).children().attr("href");
-//     var link = $(element).children().attr("href");
-//     var title = $(element).children().text();
 
-//     // Save these results in an object that we'll push into the results array we defined earlier
-//     results.push({
-//       title: title,
-//       link: link
-//     });
-//   });
+    // If we were able to successfully scrape and save an Article, send a message to the client
+    res.send("Scrape Complete");
+  });
+});
 
-//   // Log the results once you've looped through each of the elements found with cheerio
-//   console.log(results);
-// });
 
+
+// Route for getting all Articles from the db
+app.get("/articles", function(req, res) {
+  // Grab every document in the Articles collection
+  db.Article.find({})
+    .then(function(dbArticle) {
+      // If we were able to successfully find Articles, send them back to the client
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      // If an error occurred, send it to the client
+      res.json(err);
+    });
+});
 
 
 //Listen to port
