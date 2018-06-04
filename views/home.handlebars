@@ -1,24 +1,20 @@
 <main>
   <div class="container">
     <div class="row">
-      {{#each results}}
+
+     {{#each results}}
       <div class="col s12 m4">
-        <div class="card">
-          <div class="card-image">
-            <img src="https://materializecss.com/images/sample-1.jpg">
-            <span class="card-title">{{result.title}}</span>
-            <a class="btn tooltipped btn-floating halfway-fab waves-effect waves-light red" data-position="bottom" data-tooltip="save article">
-              <i class="material-icons">add</i>
-            </a>
-          </div>
+        <div class="card grey lighten-4">
           <div class="card-content">
-            <p>{{this.title}}</p>
+             <a href="{{this.link}}"><span class="card-title">{{this.title}}</span></a>
+             <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
           </div>
+           <div class="card-action">
+              <a href="#">Save Article</a>
+              <a href="#">Delete</a>
+            </div>
         </div>
       </div>
-
       {{/each}}
-
-
     </div>
 </main>

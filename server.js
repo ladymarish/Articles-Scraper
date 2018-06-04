@@ -29,12 +29,6 @@ app.engine('handlebars', exphbs({
 }));
 app.set('view engine', 'handlebars');
 
-// host
-// port
-// name = mongoHeadlines
-// username
-// password
-
 
 // Database configuration with mongoose
 mongoose.connect("mongodb://localhost/mongoHeadlines"); 
@@ -57,7 +51,6 @@ app.get('/', function (req, res) {
       // If an error occurred, send it to the client
       res.json(err);
     });
-  
 });
 
 
@@ -76,24 +69,21 @@ app.get("/scrape", function (req, res) {
 
     var articles = []; // [{title: '', link}, {title: '', link: ''}]
     // Now, we grab every h2 within an article tag, and do the following:
-    $("h2.story-heading").each(function (i, element) {
+    $("article.story").each(function (i, element) {
       // Save an empty result object
       var result = {};
 
       // Add the text and href of every link, and save them as properties of the result object
-      result.title = $(this).children("a").text().trim();
-      result.link = $(this).children("a").attr("href");
+      result.title = $(this).children("h2").text().trim();
+      result.link = $(this).children("h2").attr("href");
+      //result.summary = $(this).children("p").text().trim();
+      //result.image = $(this).children("img");
 
       console.log('Link: ', result.link)
-      articles.push(result);
-
+      //articles.push(result);
 
     });
 
-    // Mongoose
-      // Promise
-       // promise
-       // promise
 
     // Create a new Article using the `result` object built from scraping
     db.Article.create(articles) // promise
@@ -110,17 +100,17 @@ app.get("/scrape", function (req, res) {
 
     // return res.json(err);
 
-
-    // If we were able to successfully scrape and save an Article, send a message to the client
-
   });
+});
 
-  
+// Route for deleting all Articles from the db
+app.delete("/", function (req, res) {
+  // Grab every document in the Articles collection
+  db.Article.remove(articles)
 });
 
 
-
-// Route for getting all Articles from the db
+//Route for getting all Articles from the db
 app.get("/articles", function (req, res) {
   // Grab every document in the Articles collection
   db.Article.find({})

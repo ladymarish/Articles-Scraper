@@ -18,6 +18,23 @@
     box-shadow: 0 -35px 35px -5px #000;
   }
 
+  .card p {
+    padding-bottom:20px;
+  }
+
+  .card-content {
+    height:320px;
+  }
+
+  .card .card-action a:not(.btn):not(.btn-large):not(.btn-small):not(.btn-large):not(.btn-floating) {
+    color:#FF2F6E;
+    font-weight:bold;
+  }
+
+  .card-title {
+    font-family: 'IM Fell Great Primer SC', serif;
+  }
+
   nav, .page-footer {
   	background-color:#ff2f6e;
   }
@@ -35,14 +52,6 @@
   .page-footer {
   	padding-top:0;
   	text-align: center;
-  }
-
-  .btn, .btn-large, .btn-small {
-  	background-color:#2815b0;
-  }
-
-  .btn:hover, .btn-large:hover, .btn-small:hover {
-  	background-color:#471dbc;
   }
 
   nav .brand-logo {
