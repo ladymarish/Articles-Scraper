@@ -6,7 +6,6 @@ var mongoose = require("mongoose");
 var cheerio = require("cheerio");
 var request = require("request");
 var logger = require("morgan");
-var axios = require("axios");
 
 
 // Sets up the Express App
@@ -39,9 +38,9 @@ mongoose.connect("mongodb://localhost/mongoHeadlines");
 //GET requests to render Handlebars pages
 app.get('/', function (req, res) {
   // Grab every document in the Articles collection
-  console.log('Testing');
+ 
   db.Article.find({})
-    .limit(10)
+    .limit(3)
     .then(function (articles) {
       console.log('Articles: ', articles);
       // If we were able to successfully find Articles, send them back to the client
@@ -54,59 +53,80 @@ app.get('/', function (req, res) {
 });
 
 
+var articles = [];
+
+
 // Scrapes data from Nytimes into database
 app.get("/scrape", function (req, res) {
-  // Make a request for the news section of `ycombinator`
-
-
+  
+  // Make a request for the news section of `nytimes`
   request("https://www.nytimes.com/", function (error, response, html) {
 
     // Load the html body from request into cheerio
-    // {username: 'accimeester'} response.username 
+    var $ = cheerio.load(html);
 
-    var $ = cheerio.load(html); // HTML
-
-
-    var articles = []; // [{title: '', link}, {title: '', link: ''}]
     // Now, we grab every h2 within an article tag, and do the following:
     $("article.story").each(function (i, element) {
       // Save an empty result object
       var result = {};
-
-      // Add the text and href of every link, and save them as properties of the result object
+      
+      // Add the text,href and summary of every link, and save them as properties of the result object
       result.title = $(this).children("h2").text().trim();
       result.link = $(this).children("h2").attr("href");
-      //result.summary = $(this).children("p").text().trim();
-      //result.image = $(this).children("img");
+      //var summary = $(this).children("p").text().trim();
 
-      console.log('Link: ', result.link)
-      //articles.push(result);
+      // result.push({
+      //   title: title,
+      //   link: link,
+      //   summary: summary,
+      // });
+
+      articles.push(result);
+      console.log(result)
 
     });
-
-
-    // Create a new Article using the `result` object built from scraping
-    db.Article.create(articles) // promise
-      .then(function (dbArticle) {
-        // View the added result in the console
-        console.log(dbArticle);
-        res.send("Scrape Complete"); // Only send one time
-      })
-      .catch(function (err) {
-        console.log('Error: ', err);
-        // If an error occurred, send it to the client
-        res.send("Failed to complete scrape"); // Only send one time
-      });
-
-    // return res.json(err);
 
   });
 });
 
+//Handle Scrape button
+//$("#submit").on("click", function() {
+app.post("/scrape", function(req, res) {
+  console.log(res)
+  // $.ajax({
+  //     method: "GET",
+  //     url: "/",
+  // }).done(function(data) {
+  //     console.log(data)
+  //     window.location = "/"
+  // })
+
+
+   // Create a new Article using the `result` object built from scraping
+   db.Article.update(articles) // promise
+   .then(function (dbArticle) {
+     // View the added result in the console
+     //console.log("hey there can you see me??", dbArticle);
+     //res.send("Scrape Complete"); // Only send one time
+
+       // If we were able to successfully find Articles, send them back to the client
+      res.render('home', {results: articles});
+
+   })
+   .catch(function (err) {
+     console.log('Error: ', err);
+     // If an error occurred, send it to the client
+     res.send("Failed to complete scrape"); // Only send one time
+   });
+
+ // return res.json(err);
+});
+
+
 // Route for deleting all Articles from the db
 app.delete("/", function (req, res) {
   // Grab every document in the Articles collection
-  db.Article.remove(articles)
+  db.Article.remove({})
 });
 
 
@@ -114,7 +134,7 @@ app.delete("/", function (req, res) {
 app.get("/articles", function (req, res) {
   // Grab every document in the Articles collection
   db.Article.find({})
-    .limit(2)
+    .limit(3)
     .then(function (dbArticle) {
       // If we were able to successfully find Articles, send them back to the client
       res.json(dbArticle);

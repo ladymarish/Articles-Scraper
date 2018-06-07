@@ -22,8 +22,10 @@
           <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href="/">Home</a></li>
             <li><a href="/saved.html">Saved Articles</a></li>
-            <a href='/' id="submit" class="waves-effect waves-light btn-large deep-purple darken-4"><i class="material-icons left">list</i>Scrape New Articles!</a>
-            <a href='/' id="clear" class="waves-effect waves-light btn-large light-blue">Clear Articles</a>
+             <form action="/scrape" method="post">
+               <button type="submit" class="waves-effect waves-light btn-large deep-purple darken-4"><i class="material-icons left">list</i>Scrape New Articles!</button>
+             </form>
+             <a href='/' id="clear" class="waves-effect waves-light btn-large light-blue">Clear Articles</a>
         </ul>
       </div>
     </nav>

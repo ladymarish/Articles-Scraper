@@ -22,6 +22,15 @@
     padding-bottom:20px;
   }
 
+  .card-action a {
+    font-size:14px;
+    letter-spacing: -0.1px;
+  }
+
+  .card .card-action a:not(.btn):not(.btn-large):not(.btn-small):not(.btn-large):not(.btn-floating):hover {
+    color:#311B92;
+  }
+
   .card-content {
     height:320px;
   }

@@ -1,24 +1,16 @@
-//Handle Scrape button
-$("#submit").on("click", function() {
-    $.ajax({
-        method: "GET",
-        url: "/",
-    }).done(function(data) {
-        console.log(data)
-        window.location = "/"
-    })
-});
+
 
 $("#clear").on("click", function() {
-  $.ajax({
-    method: "DELETE",
-    url: "/"
-  }).done(function(data) {
-    console.log(data)
-    db.Article.remove(articles)
-
-  })
-});
+  db.Article.remove({})
+  //   $.ajax({
+  //     method: "DELETE",
+  //     url: "/"
+  //   }).done(function(data) {
+  //     console.log(data)
+  //     window.location = "/"
+  //   })
+  // )
+}); 
 
 
 // // Click event to add a book to the db
@@ -44,15 +36,16 @@ $("#clear").on("click", function() {
 // });
 
 
-// Grab the articles as a json
-// $.getJSON("/articles", function(data) {
+//Grab the articles as a json
+// $.getJSON("/", function(data) {
 //   // For each one
-//   //$(".row").empty();
+//   $(".row").empty();
 //   for (var i = 0; i < data.length; i++) {
 //     // Display the apropos information on the page
 //     $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
 //   }
 // });
+
 
 // // Whenever someone clicks a p tag
 // $(document).on("click", "p", function() {
